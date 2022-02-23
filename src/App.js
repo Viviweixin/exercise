@@ -1,25 +1,61 @@
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import Header from './components/Header';
+import List from './components/List';
+import Footer from './components/Footer';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export default class App extends Component {
+  state = {
+    todos:[
+      {id:'001', name:'cleaning', done:true},
+      {id:'002', name:'reading', done:true}
+    ]
+  }
 
-export default App;
+  addTodo = todoObj => {
+    const {todos} = this.state;
+    const newTodos = [todoObj, ...todos];
+    this.setState({todos:newTodos})
+  }
+  updateTodo = (id, done)=> {
+    const {todos} = this.state;
+    const newTodos = todos.map(todo=>{
+      if(todo.id === id) return {...todo, done:done}
+      else return todo
+    })
+    this.setState({todos:newTodos})
+  }
+  deleteTodo = (id)=>{
+    const {todos} = this.state;
+    const newTodos = todos.filter(todo=>{
+      return todo.id !== id
+    })
+    this.setState({todos:newTodos})
+  }
+  checkAllTodo = (done) => {
+    const {todos} = this.state;
+    const newTodos = todos.map(todoObj=>{
+      return {...todoObj, done:done}
+    })
+    this.setState({todos:newTodos})
+  }
+  clearAllDone = () => {
+    const {todos} = this.state;
+    const newTodos = todos.filter(todoObj => {
+      return todoObj.done === false
+    })
+    this.setState({todos: newTodos})
+  }
+
+  render(){
+    const {todos} = this.state;
+  return (
+    <div>
+         <Header addTodo={this.addTodo}/>
+         <List todos={todos} updateTodo={this.updateTodo} deleteTodo={this.deleteTodo}/>
+         <Footer todos={todos} checkAllTodo={this.checkAllTodo} clearAllDone={this.clearAllDone}/>
+    </div>
+
+  );  
+  }
+}
